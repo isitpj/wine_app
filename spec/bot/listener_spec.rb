@@ -1,8 +1,6 @@
 require 'rails_helper'
-require 'spec_helper'
-require 'facebook/messenger'
 
-RSpec.describe Listener, type: :request do
+RSpec.describe Listener do
   FakeMessage = Struct.new(:sender, :recipient, :timestamp, :message)
 
   describe 'Bot#on(message)' do
