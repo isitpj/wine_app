@@ -6,6 +6,9 @@ env:
   - RACK_ENV=test
 
 install:
-- bundle install
+  - bundle install
 
+before_script:
+  - rake db:create
+  
 script: bundle exec rake
