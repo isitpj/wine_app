@@ -17,6 +17,14 @@ RSpec.describe Listener do
 
       Bot.trigger(:message, user_message)
     end
+
+    it 'invites the user to add a new bottle of white wine' do
+      user_message = fake_message('I just had a bottle of white')
+      expected_response = 'How lovely! Would you like to add a new bottle of white to your cellar?'
+      expect_bot_message_to_contain(user_message, expected_response)
+
+      Bot.trigger(:message, user_message)
+    end
   end
 
   private
