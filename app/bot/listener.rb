@@ -6,27 +6,17 @@ class Listener
   Facebook::Messenger::Subscriptions.subscribe(access_token: ENV["FB_ACCESS_TOKEN"])
   Bot.on :message do |message|
     sender = message.sender
-    if /red/i.match? message.text
-      Bot.deliver({
-        recipient: sender,
-        message: {
-          text: 'How lovely! Would you like to add a new bottle of red to your cellar?'
-        }
-        }, access_token: ENV['FB_ACCESS_TOKEN'])
-    elsif /white/i.match? message.text
-      Bot.deliver({
-        recipient: sender,
-        message: {
-          text: 'How lovely! Would you like to add a new bottle of white to your cellar?'
-        }
-        }, access_token: ENV['FB_ACCESS_TOKEN'])
+    /(?<wine_colour>red|white)/i =~ message.text
+    response = if wine_colour
+      "How lovely! Would you like to add a new bottle of #{wine_colour.downcase} to your cellar?"
     else
-      Bot.deliver({
-        recipient: sender,
-        message: {
-          text: "Hey there, #{sender}."
-        }
-        }, access_token: ENV['FB_ACCESS_TOKEN'])
+      "Hey there, #{sender}."
     end
+    Bot.deliver({
+      recipient: sender,
+      message: {
+        text: response
+      }
+    }, access_token: ENV['FB_ACCESS_TOKEN'])
   end
 end
