@@ -13,6 +13,13 @@ class Listener
           text: 'How lovely! Would you like to add a new bottle of red to your cellar?'
         }
         }, access_token: ENV['FB_ACCESS_TOKEN'])
+    elsif /white/i.match? message.text
+      Bot.deliver({
+        recipient: sender,
+        message: {
+          text: 'How lovely! Would you like to add a new bottle of white to your cellar?'
+        }
+        }, access_token: ENV['FB_ACCESS_TOKEN'])
     else
       Bot.deliver({
         recipient: sender,
