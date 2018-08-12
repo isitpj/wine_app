@@ -9,7 +9,7 @@ class Listener
   Bot.on :message do |message|
     sender = message.sender
     uri = URI.parse("https://graph.facebook.com/#{sender['id']}?fields=first_name,last_name,profile_pic&access_token=#{ENV["FB_ACCESS_TOKEN"]}")
-    ap uri
+
     response = Net::HTTP.get(uri)
     json_response = JSON.parse(response)
 
