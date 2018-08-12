@@ -18,7 +18,7 @@ gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # Include Facebook Messenger gem
-gem 'facebook-messenger'sudo chown -R $(whoami):$(whoami)
+gem 'facebook-messenger'
 # Include Figaro to facilitate setting environment variables
 gem 'figaro'
 # gem 'therubyracer', platforms: :ruby
@@ -63,7 +63,7 @@ end
 
 group :test do
   # stub HTTP requests in tests
-  gem 'webmock/rspec'
+  gem 'webmock'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
