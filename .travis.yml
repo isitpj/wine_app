@@ -1,6 +1,6 @@
 language: ruby
 rvm:
-  - ruby 2.3.1
+  - ruby 2.5.1
 env:
   - DB=postgres
   - RACK_ENV=test
@@ -10,5 +10,5 @@ install:
 
 before_script:
   - rake db:create
-  
+
 script: bundle exec rake
