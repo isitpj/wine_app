@@ -34,7 +34,7 @@ gem 'jbuilder', '~> 2.5'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
-# Use Capistrano for deployment
+# Use Capistrano for deploymentgem 'dotenv-rails'
 # gem 'capistrano-rails', group: :development
 
 # Add awesome_print for easier debugging
@@ -59,6 +59,8 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
   # Add pry for a nicer Rails console
   gem 'pry-rails'
+  # dot env
+  gem 'dotenv-rails'
 end
 
 group :test do
