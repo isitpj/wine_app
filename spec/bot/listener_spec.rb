@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'webmock/rspec'
 
 RSpec.describe Listener do
   FakeMessage = Struct.new(:sender, :recipient, :timestamp, :text)
@@ -22,6 +23,16 @@ RSpec.describe Listener do
       user_message = fake_message('I just had a bottle of white')
       expected_response = 'How lovely! Would you like to add a new bottle of white to your cellar?'
       expect_bot_message_to_contain(user_message, expected_response)
+
+      Bot.trigger(:message, user_message)
+    end
+
+    it 'makes a GET request to facebook to retrieve profile information' do
+      user_message = fake_message('Hey bot')
+      string = "https://graph.facebook.com/#{user_message.sender['id']}?fields=first_name,last_name,profile_pic&access_token=#{ENV["FB_ACCESS_TOKEN"]}"
+
+      expect(URI).to receive(:parse) # .with(string)
+      expect(Net::HTTP).to receive(:get) { "{\"first_name\":\"Peter\",\"last_name\":\"Johnstone\"}" }
 
       Bot.trigger(:message, user_message)
     end
