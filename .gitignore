@@ -22,8 +22,8 @@
 
 .byebug_history
 
-# Ignore application configuration
-/config/application.yml
+# Ignore the ENV file
+.env
 
 # Ignore ngrok
 ngrok
