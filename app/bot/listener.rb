@@ -15,10 +15,13 @@ class Listener
 
     first_name = json_response['first_name']
     last_name = json_response['last_name']
+    /(?<account_creation_request>account|sign up|signup)/i =~ message.text
     /(?<wine_colour>red|white)/i =~ message.text
 
     response = if wine_colour
       "How lovely! Would you like to add a new bottle of #{wine_colour.downcase} to your cellar?"
+    elsif account_creation_request
+      'Would you like to create your account with Charles d\'Née?'
     else
       "Hey there, #{first_name} #{last_name}."
     end
