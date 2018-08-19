@@ -4,6 +4,25 @@ require 'webmock/rspec'
 RSpec.describe Listener do
   FakeMessage = Struct.new(:sender, :recipient, :timestamp, :text)
 
+  before(:each) do
+    response_data = {
+      "first_name" => "Peter",
+      "last_name" => "Johnstone",
+      "profile_pic" => "https://platform-lookaside.fbsbx.com/platform/profilepic/",
+      "id" => "123456"
+    }.to_json
+
+    stub_request(:get, "https://graph.facebook.com/1234?access_token=EAAYTdsHRKzkBAIYZBbHkxVIvZBTmyKoUw0G6mKMqFfMtqkUBX2jh6OQzZCZBIGTNfUVKHJ2NMZCYgpjCJnnpdqdgjeRWCSvdxWJ8ChrTZCkUsWGVg95DnyorBNMzd8F3fiUuiuvxPsCMtbAvw86NflTmNB7GUjQUx5VYbw6CCbpwZDZD&fields=first_name,last_name,profile_pic").
+         with(
+           headers: {
+       	  'Accept'=>'*/*',
+       	  'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+       	  'Host'=>'graph.facebook.com',
+       	  'User-Agent'=>'Ruby'
+           }).
+         to_return(status: 200, body: response_data, headers: {})
+  end
+
   describe 'Bot#on(message)' do
     it 'responds with a message' do
       expect(Bot).to receive(:deliver)
@@ -31,8 +50,17 @@ RSpec.describe Listener do
       user_message = fake_message('Hey bot')
       string = "https://graph.facebook.com/#{user_message.sender['id']}?fields=first_name,last_name,profile_pic&access_token=#{ENV["FB_ACCESS_TOKEN"]}"
 
-      expect(URI).to receive(:parse) # .with(string)
+      expect(URI).to receive(:parse)
       expect(Net::HTTP).to receive(:get) { "{\"first_name\":\"Peter\",\"last_name\":\"Johnstone\"}" }
+
+      Bot.trigger(:message, user_message)
+    end
+
+    it 'invites a user to sign up after they ask to' do
+      user_message = fake_message('I\'d like to create an account please')
+      expected_response = 'Would you like to create your account with Charles d\'Née?'
+
+      expect_bot_message_to_contain(user_message, expected_response)
 
       Bot.trigger(:message, user_message)
     end
