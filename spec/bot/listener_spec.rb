@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'webmock/rspec'
 
 RSpec.describe Listener do
-  FakeMessage = Struct.new(:sender, :recipient, :timestamp, :text)
+  FakeMessage = Struct.new(:sender, :recipient, :timestamp, :text, :quick_replies)
 
   before(:each) do
     response_data = {
@@ -57,11 +57,25 @@ RSpec.describe Listener do
       Bot.trigger(:message, user_message)
     end
 
-    it 'invites a user to sign up after they ask to' do
-      user_message = fake_message('I\'d like to create an account please')
-      expected_response = 'Would you like to create your account with Charles d\'Née?'
+    it 'invites a user to sign up after they ask to with quick replies for yes' do
+      message = 'I\'d like to create an account please'
+      quick_reply = {
+        content_type: 'text',
+        title: 'Yes please!',
+        payload: 'CREATE_ACCOUNT'
+      }
+      user_message = fake_message(message, quick_replies: quick_reply)
 
-      expect_bot_message_to_contain(user_message, expected_response)
+      ap '==========================='
+      ap user_message
+      ap '==========================='
+
+      expected_response = 'Would you like to create your account with Charles d\'Née?'
+      expect_bot_message_to_have_text(user_message, expected_response)
+      expect_bot_message_to_have_quick_reply(user_message, quick_reply)
+
+
+      # expect_bot_message_to_contain(user_message, expected_response)
 
       Bot.trigger(:message, user_message)
     end
@@ -69,11 +83,16 @@ RSpec.describe Listener do
 
   private
 
-  def fake_message(message_text)
+  def fake_message(message_text, quick_replies: {})
     sender = {"id"=>"1234"}
     recipient = {"id"=>"5678"}
     timestamp = 1528049653543
-    FakeMessage.new(sender, recipient, timestamp, message_text)
+    quick_replies = [{
+      content_type: quick_replies[:content_type],
+      title: quick_replies[:title],
+      payload: quick_replies[:payload]
+    }]
+    FakeMessage.new(sender, recipient, timestamp, message_text, quick_replies)
   end
 
   def expect_bot_message_to_contain(message, text)
@@ -83,5 +102,19 @@ RSpec.describe Listener do
         text: text
       }
       }, access_token: ENV['FB_ACCESS_TOKEN'])
+  end
+
+  def expect_bot_message_to_have_text(message, text)
+    expect(Bot).to receive(:deliver)
+    expect(message.text).to eq(text)
+  end
+
+  def expect_bot_message_to_have_quick_reply(message, quick_reply)
+    expect(Bot).to receive(:deliver)
+    message.quick_replies.any? do |reply|
+      expect(reply[:content_type]).to eq(quick_reply[:content_type])
+      expect(reply[:title]).to eq(quick_reply[:title])
+      expect(reply[:payload]).to eq(quick_reply[:payload])
+    end
   end
 end

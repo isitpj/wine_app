@@ -26,11 +26,25 @@ class Listener
       "Hey there, #{first_name} #{last_name}."
     end
 
-    Bot.deliver({
+    message = {
       recipient: sender,
       message: {
-        text: response
+        text: response,
+        quick_replies: [
+          {
+            content_type: 'text',
+            title: 'Yes please!',
+            payload: 'CREATE_ACCOUNT'
+          },
+          {
+            content_type: 'text',
+            title: 'Not right now',
+            payload: 'NULL'
+          }
+        ]
       }
-    }, access_token: ENV['FB_ACCESS_TOKEN'])
+    }
+
+    Bot.deliver(message, access_token: ENV['FB_ACCESS_TOKEN'])
   end
 end
