@@ -12,7 +12,7 @@ RSpec.describe Listener do
       "id" => "123456"
     }.to_json
 
-    stub_request(:get, "https://graph.facebook.com/1234?access_token=EAAYTdsHRKzkBAIYZBbHkxVIvZBTmyKoUw0G6mKMqFfMtqkUBX2jh6OQzZCZBIGTNfUVKHJ2NMZCYgpjCJnnpdqdgjeRWCSvdxWJ8ChrTZCkUsWGVg95DnyorBNMzd8F3fiUuiuvxPsCMtbAvw86NflTmNB7GUjQUx5VYbw6CCbpwZDZD&fields=first_name,last_name,profile_pic").
+    stub_request(:get, "https://graph.facebook.com/1234?access_token=#{ENV['FB_ACCESS_TOKEN']}&fields=first_name,last_name,profile_pic").
          with(
            headers: {
        	  'Accept'=>'*/*',
@@ -50,6 +50,7 @@ RSpec.describe Listener do
       user_message = fake_message('Hey bot')
       string = "https://graph.facebook.com/#{user_message.sender['id']}?fields=first_name,last_name,profile_pic&access_token=#{ENV["FB_ACCESS_TOKEN"]}"
 
+      allow(Bot).to receive(:deliver) {}
       expect(URI).to receive(:parse)
       expect(Net::HTTP).to receive(:get) { "{\"first_name\":\"Peter\",\"last_name\":\"Johnstone\"}" }
 
