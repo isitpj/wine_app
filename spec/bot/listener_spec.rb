@@ -13,6 +13,8 @@ RSpec.describe Listener do
       expect(Bot).to receive(:deliver)
       message = fake_message('Hello, world')
       Bot.trigger(:message, message)
+
+      expect_bot_message_not_to_have_quick_replies(message)
     end
 
     it 'invites the user to add a new bottle of red wine' do
@@ -20,6 +22,7 @@ RSpec.describe Listener do
       expected_response = 'How lovely! Would you like to add a new bottle of red to your cellar?'
 
       expect_bot_message_to_have_text(user_message, expected_response)
+      expect_bot_message_not_to_have_quick_replies(user_message)
     end
 
     it 'invites the user to add a new bottle of white wine' do
@@ -27,6 +30,7 @@ RSpec.describe Listener do
       expected_response = 'How lovely! Would you like to add a new bottle of white to your cellar?'
 
       expect_bot_message_to_have_text(user_message, expected_response)
+      expect_bot_message_not_to_have_quick_replies(user_message)
     end
 
     it 'makes a GET request to facebook to retrieve profile information' do
@@ -81,6 +85,20 @@ RSpec.describe Listener do
         hash_including(
           message: hash_including(
             quick_replies: array_including(quick_reply)
+          )
+        ),
+        access_token: ENV['FB_ACCESS_TOKEN']
+      )
+
+      Bot.trigger(:message, message)
+  end
+
+  def expect_bot_message_not_to_have_quick_replies(message)
+    expect(Bot).to receive(:deliver)
+      .with(
+        hash_including(
+          message: hash_excluding(
+            quick_replies: instance_of(Array)
           )
         ),
         access_token: ENV['FB_ACCESS_TOKEN']
