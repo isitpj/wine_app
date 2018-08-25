@@ -29,21 +29,26 @@ class Listener
     message = {
       recipient: sender,
       message: {
-        text: response,
-        quick_replies: [
-          {
-            content_type: 'text',
-            title: 'Yes please!',
-            payload: 'CREATE_ACCOUNT'
-          },
-          {
-            content_type: 'text',
-            title: 'Not right now',
-            payload: 'NULL'
-          }
-        ]
+        text: response
       }
     }
+
+    account_creation_quick_replies = [
+      {
+        content_type: 'text',
+        title: 'Yes please!',
+        payload: 'CREATE_ACCOUNT'
+      },
+      {
+        content_type: 'text',
+        title: 'Not right now',
+        payload: 'NULL'
+      }
+    ]
+
+    message[:message][:quick_replies] = account_creation_quick_replies if account_creation_request
+
+
 
     Bot.deliver(message, access_token: ENV['FB_ACCESS_TOKEN'])
   end
