@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'webmock/rspec'
 
 RSpec.describe Listener do
-  FakeMessage = Struct.new(:sender, :recipient, :timestamp, :text, :quick_replies)
+  FakeMessage = Struct.new(:sender, :recipient, :timestamp, :text, :messaging)
 
   before(:each) do
     stub_facebook_user_data_request
@@ -45,12 +45,13 @@ RSpec.describe Listener do
 
     it 'invites a user to sign up after they ask to with quick replies for yes' do
       message = 'I\'d like to create an account please'
+      user_message = fake_message(message)
+
       quick_reply = {
         content_type: 'text',
         title: 'Yes please!',
         payload: 'CREATE_ACCOUNT'
       }
-      user_message = fake_message(message)
 
       expected_response = 'Would you like to create your account with Charles d\'Née?'
 
@@ -59,18 +60,33 @@ RSpec.describe Listener do
     end
 
     it 'creates a new user in the database' do
+      allow(Bot).to receive(:deliver) {}
+      text = 'any old message text'
+      quick_reply_payload = 'CREATE_ACCOUNT'
+      user_message = fake_message(text, quick_reply_payload)
 
+      expect{Bot.trigger(:message, user_message)}.to change{User.count}.from(0).to(1)
     end
   end
 
   private
 
-  def fake_message(message_text)
+  def fake_message(message_text, quick_reply_payload = nil)
     sender = {"id"=>"1234"}
     recipient = {"id"=>"5678"}
     timestamp = 1528049653543
-    quick_replies = quick_replies
-    FakeMessage.new(sender, recipient, timestamp, message_text, quick_replies)
+    messaging = {
+      "sender"=>{"id"=>"1732016540208841"},
+        "recipient"=>{"id"=>"364376550736984"},
+        "timestamp"=>1535288528163,
+        "message"=>{
+          "quick_reply"=>{"payload"=>quick_reply_payload},
+          "mid"=> "0j3SQeNnpIDLxBwJl7hRofACd_36bJGN3qXKXv32Bok8GqJfA284e1hsnOagFiVZsbqLLainVGIVURWOlNJ4Tw",
+          "seq"=>2171281,
+          "text"=>"Account"
+        }
+      }
+    FakeMessage.new(sender, recipient, timestamp, message_text, messaging)
   end
 
   def expect_bot_message_to_have_text(message, text)
