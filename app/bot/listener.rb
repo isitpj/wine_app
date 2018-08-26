@@ -52,11 +52,11 @@ class Listener
     if message.messaging['message']['quick_reply']
       payload = message.messaging['message']['quick_reply']['payload']
       if payload == 'CREATE_ACCOUNT'
-        response_message[:message][:text] = 'Great! You have successfully opened an account with Charles d\'Née.'
+        response_message[:message][:text] = 'Great! You have successfully created an account with Charles d\'Née.'
         User.find_or_create_by(facebook_id: sender['id']) do |user|
           user.first_name = first_name
           user.last_name = last_name
-          profile_pic_url = profile_pic_url
+          user.profile_pic_url = profile_pic_url
         end
       end
     end
