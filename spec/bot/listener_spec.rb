@@ -50,18 +50,22 @@ RSpec.describe Listener do
         title: 'Yes please!',
         payload: 'CREATE_ACCOUNT'
       }
-      user_message = fake_message(message, quick_replies: quick_reply)
+      user_message = fake_message(message)
 
       expected_response = 'Would you like to create your account with Charles d\'Née?'
 
       expect_bot_message_to_have_text(user_message, expected_response)
       expect_bot_message_to_have_quick_reply(user_message, quick_reply)
     end
+
+    it 'creates a new user in the database' do
+
+    end
   end
 
   private
 
-  def fake_message(message_text, quick_replies: [])
+  def fake_message(message_text)
     sender = {"id"=>"1234"}
     recipient = {"id"=>"5678"}
     timestamp = 1528049653543
