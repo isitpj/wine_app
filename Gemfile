@@ -48,6 +48,8 @@ group :development, :test do
   gem 'selenium-webdriver'
   # Adds RSpec for testing
   gem 'rspec-rails', '~> 3.7'
+  # Adds annotate to document models
+  gem 'annotate'
 end
 
 group :development do
