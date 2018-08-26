@@ -15,6 +15,7 @@ class Listener
 
     first_name = json_response['first_name']
     last_name = json_response['last_name']
+    profile_pic_url = json_response['profile_pic']
     /(?<account_creation_request>account|sign up|signup)/i =~ message.text
     /(?<wine_colour>red|white)/i =~ message.text
 
@@ -26,7 +27,7 @@ class Listener
       "Hey there, #{first_name} #{last_name}."
     end
 
-    message = {
+    response_message = {
       recipient: sender,
       message: {
         text: response
@@ -46,10 +47,20 @@ class Listener
       }
     ]
 
-    message[:message][:quick_replies] = account_creation_quick_replies if account_creation_request
+    response_message[:message][:quick_replies] = account_creation_quick_replies if account_creation_request
 
+    if message.messaging['message']['quick_reply']
+      payload = message.messaging['message']['quick_reply']['payload']
+      if payload == 'CREATE_ACCOUNT'
+        response_message[:message][:text] = 'Great! You have successfully opened an account with Charles d\'Née.'
+        User.find_or_create_by(facebook_id: sender['id']) do |user|
+          user.first_name = first_name
+          user.last_name = last_name
+          profile_pic_url = profile_pic_url
+        end
+      end
+    end
 
-
-    Bot.deliver(message, access_token: ENV['FB_ACCESS_TOKEN'])
+    Bot.deliver(response_message, access_token: ENV['FB_ACCESS_TOKEN'])
   end
 end
