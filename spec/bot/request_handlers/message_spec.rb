@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe RequestHandlers::Message do
   FakeMessage = Struct.new(:sender, :recipient, :timestamp, :text, :messaging)
-  
+
   before(:each) do
     stub_facebook_user_data_request
   end
@@ -30,16 +30,6 @@ RSpec.describe RequestHandlers::Message do
 
       expect_bot_message_to_have_text(user_message, expected_response)
       expect_bot_message_not_to_have_quick_replies(user_message)
-    end
-
-    it 'makes a GET request to facebook to retrieve profile information' do
-      user_message = fake_message('Hey bot')
-
-      allow(Bot).to receive(:deliver) {}
-      expect(URI).to receive(:parse).with(facebook_user_data_request_url)
-      expect(Net::HTTP).to receive(:get) { "{\"first_name\":\"Peter\",\"last_name\":\"Johnstone\"}" }
-
-      RequestHandlers::Message.handle(user_message)
     end
 
     it 'invites a user to sign up after they ask to with quick replies for yes' do
