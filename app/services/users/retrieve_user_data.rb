@@ -9,6 +9,7 @@ module Users
 
     def call
       data = get_facebook_data
+      JSON.parse(data)
     end
 
     private
