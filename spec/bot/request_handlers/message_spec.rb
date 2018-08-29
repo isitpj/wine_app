@@ -16,6 +16,14 @@ RSpec.describe RequestHandlers::Message do
       expect_bot_message_not_to_have_quick_replies(message)
     end
 
+    it 'calls the RetrieveUserData service' do
+      message = fake_message('Hello, world')
+      allow(Bot).to receive(:deliver)
+      expect(Users::RetrieveUserData).to receive(:call).with(message.sender['id']) { JSON.parse(facebook_user_data_response[:body]) }
+
+      RequestHandlers::Message.handle(message)
+    end
+
     it 'invites the user to add a new bottle of red wine' do
       user_message = fake_message('I just had a bottle of red')
       expected_response = 'How lovely! Would you like to add a new bottle of red to your cellar?'
