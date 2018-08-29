@@ -2,14 +2,12 @@ module RequestHandlers
   class Message
     def self.handle(message)
       sender = message.sender
-      uri = URI.parse("https://graph.facebook.com/#{sender['id']}?fields=first_name,last_name,profile_pic&access_token=#{ENV["FB_ACCESS_TOKEN"]}")
+      user_data = Users::RetrieveUserData.call(sender['id'])
 
-      response = Net::HTTP.get(uri)
-      json_response = JSON.parse(response)
+      first_name = user_data['first_name']
+      last_name = user_data['last_name']
+      profile_pic_url = user_data['profile_pic']
 
-      first_name = json_response['first_name']
-      last_name = json_response['last_name']
-      profile_pic_url = json_response['profile_pic']
       /(?<account_creation_request>account|sign up|signup)/i =~ message.text
       /(?<wine_colour>red|white)/i =~ message.text
 
