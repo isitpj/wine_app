@@ -50,6 +50,8 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.7'
   # Adds annotate to document models
   gem 'annotate'
+  # Allow easy test object creation
+  gem 'factory_bot_rails', '~> 4.0'
 end
 
 group :development do
