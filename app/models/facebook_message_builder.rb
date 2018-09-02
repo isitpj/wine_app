@@ -1,9 +1,9 @@
 class FacebookMessageBuilder
   class << self
-    def build_message(to:, text:)
+    def build_message(to:, message:)
       {
         recipient: { id: to.facebook_id },
-        message: { text: text }
+        message: { text: message.body }
       }
     end
   end

@@ -4,14 +4,14 @@ RSpec.describe FacebookMessageBuilder do
   describe '.build_message' do
     it 'builds a basic facebook message' do
       user = create(:user)
-      text = 'Hello, world'
-      message = FacebookMessageBuilder.build_message(to: user, text: text)
+      message = create(:facebook_message, body: 'Hello, world')
+      built_message = FacebookMessageBuilder.build_message(to: user, message: message)
 
-      expect(message).to have_key(:recipient)
-      expect(message).to have_key(:message)
+      expect(built_message).to have_key(:recipient)
+      expect(built_message).to have_key(:message)
 
-      expect(message[:recipient][:id]).to eq(user.facebook_id)
-      expect(message[:message][:text]).to eq(text)
+      expect(built_message[:recipient][:id]).to eq(user.facebook_id)
+      expect(built_message[:message][:text]).to eq(message.body)
     end
   end
 end
