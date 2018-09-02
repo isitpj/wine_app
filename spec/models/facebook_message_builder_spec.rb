@@ -14,4 +14,30 @@ RSpec.describe FacebookMessageBuilder do
       expect(built_message[:message][:text]).to eq(message.body)
     end
   end
+
+  describe '.build_quick_reply' do
+    it 'builds a quick_reply, with a default content_type of text' do
+      title = 'Tap to send quick reply!'
+      payload = 'A PAYLOAD'
+
+      quick_reply = FacebookMessageBuilder.build_quick_reply(
+        title: title,
+        payload: payload,
+      )
+
+      expect(quick_reply[:content_type]).to eq('text')
+      expect(quick_reply[:title]).to eq(title)
+      expect(quick_reply[:payload]).to eq(payload)
+    end
+
+    it 'builds a quick_reply, with an overridden content_type' do
+      quick_reply = FacebookMessageBuilder.build_quick_reply(
+        content_type: 'location',
+      )
+
+      expect(quick_reply[:content_type]).to eq('location')
+      expect(quick_reply[:title]).to eq(nil)
+      expect(quick_reply[:payload]).to eq(nil)
+    end
+  end
 end
