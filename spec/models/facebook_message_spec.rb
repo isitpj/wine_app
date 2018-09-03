@@ -1,5 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe FacebookMessage, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe 'basics' do
+    it 'must have a name' do
+      message = create(:facebook_message)
+
+      ap message
+    end
+  end
 end

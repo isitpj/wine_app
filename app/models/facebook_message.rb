@@ -13,4 +13,5 @@
 #
 
 class FacebookMessage < ApplicationRecord
+  validates :name, presence: true
 end
