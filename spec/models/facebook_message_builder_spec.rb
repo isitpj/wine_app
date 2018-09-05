@@ -4,7 +4,7 @@ RSpec.describe FacebookMessageBuilder do
   describe '.build_message' do
     it 'builds a basic facebook message' do
       user = create(:user)
-      message = create(:facebook_message, body: 'Hello, world')
+      message = create(:facebook_message, name: 'Default', body: 'Hello, world')
       built_message = FacebookMessageBuilder.build_message(to: user, message: message)
 
       expect(built_message).to have_key(:recipient)
