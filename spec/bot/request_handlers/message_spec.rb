@@ -56,14 +56,17 @@ RSpec.describe RequestHandlers::Message do
       expect_bot_message_to_have_quick_reply(user_message, quick_reply)
     end
 
-    it 'creates a new user in the database but does not duplicate them' do
+    it 'calls the Users::FindOrCreateUser service' do
       allow(Bot).to receive(:deliver) {}
       text = 'any old message text'
       quick_reply_payload = 'CREATE_ACCOUNT'
       user_message = fake_message(text, quick_reply_payload)
 
-      expect{Bot.trigger(:message, user_message)}.to change{User.count}.from(0).to(1)
-      expect{Bot.trigger(:message, user_message)}.to_not change{User.count}
+      expect(Users::FindOrCreateUser).to receive(:call)
+
+      Bot.trigger(:message, user_message)
+      # expect{Bot.trigger(:message, user_message)}.to change{User.count}.from(0).to(1)
+      # expect{Bot.trigger(:message, user_message)}.to_not change{User.count}
     end
   end
 
