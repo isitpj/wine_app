@@ -1,10 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe FacebookMessageBuilder do
+  let(:user) { create(:user)}
+
   describe '.build_message' do
     it 'builds a basic facebook message' do
-      user = create(:user)
-      message = create(:facebook_message, name: 'Default', body: 'Hello, world')
+      message = create(:facebook_message, body: 'Hello, world')
       built_message = FacebookMessageBuilder.build_message(to: user, message: message)
 
       expect(built_message).to have_key(:recipient)
@@ -12,6 +13,25 @@ RSpec.describe FacebookMessageBuilder do
 
       expect(built_message[:recipient][:id]).to eq(user.facebook_id)
       expect(built_message[:message][:text]).to eq(message.body)
+    end
+
+    it 'builds a facebook message with quick replies' do
+      message = create(:facebook_message,
+        body: 'Hello, world',
+        quick_replies: Array.wrap(
+          FacebookMessageBuilder.build_quick_reply(
+            title: 'A quick reply',
+            payload: 'A_PAYLOAD'
+            )
+          )
+        )
+
+      built_message = FacebookMessageBuilder.build_message(to: user, message: message)
+
+      expect(built_message[:message][:quick_replies]).to be_an_instance_of(Array)
+      expect(built_message[:message][:quick_replies][0]['content_type']).to eq 'text'
+      expect(built_message[:message][:quick_replies][0]['title']).to eq 'A quick reply'
+      expect(built_message[:message][:quick_replies][0]['payload']).to eq 'A_PAYLOAD'
     end
   end
 
