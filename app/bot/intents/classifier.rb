@@ -1,5 +1,5 @@
-module Classification
-  class IntentClassifier
+module Intents
+  class Classifier
     def self.classify(text)
       map_text_to_intent(text)
     end

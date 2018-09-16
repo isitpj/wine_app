@@ -24,25 +24,37 @@ RSpec.describe RequestHandlers::Message do
       RequestHandlers::Message.handle(message)
     end
 
+    it 'calls the IntentClassifier class' do
+      message = fake_message('Hello, world')
+      allow(Bot).to receive(:deliver)
+      expect(Intents::Classifier).to receive(:classify).with(message.text)
+
+      RequestHandlers::Message.handle(message)
+    end
+
     it 'invites the user to add a new bottle of red wine' do
-      user_message = fake_message('I just had a bottle of red')
+      message = fake_message('I just had a bottle of red')
       expected_response = 'How lovely! Would you like to add a new bottle of red to your cellar?'
 
-      expect_bot_message_to_have_text(user_message, expected_response)
-      expect_bot_message_not_to_have_quick_replies(user_message)
+      allow(Intents::Classifier).to receive(:classify).with(message.text) { :add_red }
+
+      expect_bot_message_to_have_text(message, expected_response)
+      expect_bot_message_not_to_have_quick_replies(message)
     end
 
     it 'invites the user to add a new bottle of white wine' do
-      user_message = fake_message('I just had a bottle of white')
+      message = fake_message('I just had a bottle of white')
       expected_response = 'How lovely! Would you like to add a new bottle of white to your cellar?'
 
-      expect_bot_message_to_have_text(user_message, expected_response)
-      expect_bot_message_not_to_have_quick_replies(user_message)
+      allow(Intents::Classifier).to receive(:classify).with(message.text) { :add_white }
+
+      expect_bot_message_to_have_text(message, expected_response)
+      expect_bot_message_not_to_have_quick_replies(message)
     end
 
     it 'invites a user to sign up after they ask to with quick replies for yes' do
-      message = 'I\'d like to create an account please'
-      user_message = fake_message(message)
+      text = 'I\'d like to create an account please'
+      message = fake_message(text)
 
       quick_reply = {
         content_type: 'text',
@@ -52,8 +64,10 @@ RSpec.describe RequestHandlers::Message do
 
       expected_response = 'Would you like to create your account with Charles d\'Née?'
 
-      expect_bot_message_to_have_text(user_message, expected_response)
-      expect_bot_message_to_have_quick_reply(user_message, quick_reply)
+      allow(Intents::Classifier).to receive(:classify).with(message.text) { :create_account }
+
+      expect_bot_message_to_have_text(message, expected_response)
+      expect_bot_message_to_have_quick_reply(message, quick_reply)
     end
 
     it 'calls the Users::FindOrCreateUser service' do
@@ -65,8 +79,6 @@ RSpec.describe RequestHandlers::Message do
       expect(Users::FindOrCreateUser).to receive(:call)
 
       Bot.trigger(:message, user_message)
-      # expect{Bot.trigger(:message, user_message)}.to change{User.count}.from(0).to(1)
-      # expect{Bot.trigger(:message, user_message)}.to_not change{User.count}
     end
   end
 

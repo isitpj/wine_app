@@ -3,18 +3,18 @@ module RequestHandlers
     def self.handle(message)
       sender = message.sender
       user_data = Users::RetrieveUserData.call(sender['id'])
+      intent = Intents::Classifier.classify(message.text)
 
       first_name = user_data['first_name']
       last_name = user_data['last_name']
-      profile_pic_url = user_data['profile_pic']
 
-      /(?<account_creation_request>account|sign up|signup)/i =~ message.text
-      /(?<wine_colour>red|white)/i =~ message.text
-
-      response = if wine_colour
-        "How lovely! Would you like to add a new bottle of #{wine_colour.downcase} to your cellar?"
-      elsif account_creation_request
+      response = case intent
+      when :create_account
         'Would you like to create your account with Charles d\'Née?'
+      when :add_red
+        "How lovely! Would you like to add a new bottle of red to your cellar?"
+      when :add_white
+        "How lovely! Would you like to add a new bottle of white to your cellar?"
       else
         "Hey there, #{first_name} #{last_name}."
       end
@@ -39,7 +39,7 @@ module RequestHandlers
         }
       ]
 
-      response_message[:message][:quick_replies] = account_creation_quick_replies if account_creation_request
+      response_message[:message][:quick_replies] = account_creation_quick_replies if intent == :create_account
 
       if message.messaging['message']['quick_reply']
         payload = message.messaging['message']['quick_reply']['payload']
