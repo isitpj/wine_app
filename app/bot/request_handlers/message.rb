@@ -5,41 +5,8 @@ module RequestHandlers
       user_data = Users::RetrieveUserData.call(sender['id'])
       intent = Intents::Classifier.classify(message.text)
 
-      first_name = user_data['first_name']
-      last_name = user_data['last_name']
-
-      response = case intent
-      when :create_account
-        'Would you like to create your account with Charles d\'Née?'
-      when :add_red
-        "How lovely! Would you like to add a new bottle of red to your cellar?"
-      when :add_white
-        "How lovely! Would you like to add a new bottle of white to your cellar?"
-      else
-        "Hey there, #{first_name} #{last_name}."
-      end
-
-      response_message = {
-        recipient: sender,
-        message: {
-          text: response
-        }
-      }
-
-      account_creation_quick_replies = [
-        {
-          content_type: 'text',
-          title: 'Yes please!',
-          payload: 'CREATE_ACCOUNT'
-        },
-        {
-          content_type: 'text',
-          title: 'Not right now',
-          payload: 'NULL'
-        }
-      ]
-
-      response_message[:message][:quick_replies] = account_creation_quick_replies if intent == :create_account
+      response_message = Intents::Mapper.map_intent_to_message(intent)
+      response_message[:recipient] = sender
 
       if message.messaging['message']['quick_reply']
         payload = message.messaging['message']['quick_reply']['payload']
