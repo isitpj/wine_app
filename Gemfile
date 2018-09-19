@@ -9,7 +9,7 @@ end
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.6'
 # Use Postgres as the database for Active Record
-gem 'pg', '~> 0.18.4'
+gem 'pg', '~> 0.18.1'
 # Use Puma as the app server
 gem 'puma', '~> 3.7'
 # Use SCSS for stylesheets
@@ -48,6 +48,10 @@ group :development, :test do
   gem 'selenium-webdriver'
   # Adds RSpec for testing
   gem 'rspec-rails', '~> 3.7'
+  # Adds annotate to document models
+  gem 'annotate'
+  # Allow easy test object creation
+  gem 'factory_bot_rails', '~> 4.0'
 end
 
 group :development do
