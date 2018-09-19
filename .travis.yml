@@ -1,4 +1,12 @@
 language: ruby
+
+sudo: required
+addons:
+  postgresql: "9.6"
+
+services:
+  - postgresql
+  
 rvm:
   - ruby 2.5.1
 env:
