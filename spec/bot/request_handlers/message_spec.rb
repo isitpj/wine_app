@@ -10,14 +10,14 @@ RSpec.describe RequestHandlers::Message do
   describe '.handle' do
     it 'responds with a message' do
       expect(Bot).to receive(:deliver)
-      message = fake_message('Hello, world')
+      message = fake_incoming_message('Hello, world')
       RequestHandlers::Message.handle(message)
 
       expect_bot_message_not_to_have_quick_replies(message)
     end
 
     it 'calls the RetrieveUserData service' do
-      message = fake_message('Hello, world')
+      message = fake_incoming_message('Hello, world')
       allow(Bot).to receive(:deliver)
       expect(Users::RetrieveUserData).to receive(:call).with(message.sender['id']) { JSON.parse(facebook_user_data_response[:body]) }
 
@@ -25,7 +25,7 @@ RSpec.describe RequestHandlers::Message do
     end
 
     it 'calls the IntentClassifier class' do
-      message = fake_message('Hello, world')
+      message = fake_incoming_message('Hello, world')
       allow(Bot).to receive(:deliver)
       expect(Intents::Classifier).to receive(:classify).with(message.text)
 
@@ -33,28 +33,34 @@ RSpec.describe RequestHandlers::Message do
     end
 
     it 'invites the user to add a new bottle of red wine' do
-      message = fake_message('I just had a bottle of red')
+      message = fake_incoming_message('I just had a bottle of red')
       expected_response = 'How lovely! Would you like to add a new bottle of red to your cellar?'
 
       allow(Intents::Classifier).to receive(:classify).with(message.text) { :add_red }
+      allow(Intents::Mapper).to receive(:map_intent_to_message) { fake_outgoing_message(expected_response) }
 
       expect_bot_message_to_have_text(message, expected_response)
       expect_bot_message_not_to_have_quick_replies(message)
+
+      RequestHandlers::Message.handle(message)
     end
 
     it 'invites the user to add a new bottle of white wine' do
-      message = fake_message('I just had a bottle of white')
+      message = fake_incoming_message('I just had a bottle of white')
       expected_response = 'How lovely! Would you like to add a new bottle of white to your cellar?'
 
       allow(Intents::Classifier).to receive(:classify).with(message.text) { :add_white }
+      allow(Intents::Mapper).to receive(:map_intent_to_message) { fake_outgoing_message(expected_response) }
 
       expect_bot_message_to_have_text(message, expected_response)
-      expect_bot_message_not_to_have_quick_replies(message)
+      # expect_bot_message_not_to_have_quick_replies(message)
+
+      RequestHandlers::Message.handle(message)
     end
 
     it 'invites a user to sign up after they ask to with quick replies for yes' do
       text = 'I\'d like to create an account please'
-      message = fake_message(text)
+      message = fake_incoming_message(text)
 
       quick_reply = {
         content_type: 'text',
@@ -65,16 +71,18 @@ RSpec.describe RequestHandlers::Message do
       expected_response = 'Would you like to create your account with Charles d\'Née?'
 
       allow(Intents::Classifier).to receive(:classify).with(message.text) { :create_account }
+      allow(Intents::Mapper).to receive(:map_intent_to_message) { fake_outgoing_message(expected_response, [quick_reply]) }
 
       expect_bot_message_to_have_text(message, expected_response)
       expect_bot_message_to_have_quick_reply(message, quick_reply)
+      RequestHandlers::Message.handle(message)
     end
 
     it 'calls the Users::FindOrCreateUser service' do
       allow(Bot).to receive(:deliver) {}
       text = 'any old message text'
       quick_reply_payload = 'CREATE_ACCOUNT'
-      user_message = fake_message(text, quick_reply_payload)
+      user_message = fake_incoming_message(text, quick_reply_payload)
 
       expect(Users::FindOrCreateUser).to receive(:call)
 
@@ -84,7 +92,7 @@ RSpec.describe RequestHandlers::Message do
 
   private
 
-  def fake_message(message_text, quick_reply_payload = nil)
+  def fake_incoming_message(message_text, quick_reply_payload = nil)
     sender = {"id"=>"1234"}
     recipient = {"id"=>"5678"}
     timestamp = 1528049653543
@@ -102,14 +110,21 @@ RSpec.describe RequestHandlers::Message do
     FakeMessage.new(sender, recipient, timestamp, message_text, messaging)
   end
 
+  def fake_outgoing_message(text, quick_replies = nil)
+    {
+      message: {
+        text: text,
+        quick_replies: quick_replies
+      }
+    }
+  end
+
   def expect_bot_message_to_have_text(message, text)
     expect(Bot).to receive(:deliver)
       .with(
         hash_including(message: hash_including(text: text)),
         access_token: ENV['FB_ACCESS_TOKEN']
       )
-
-      RequestHandlers::Message.handle(message)
   end
 
   def expect_bot_message_to_have_quick_reply(message, quick_reply)
