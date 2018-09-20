@@ -37,6 +37,9 @@ gem 'jbuilder', '~> 2.5'
 # Use Capistrano for deploymentgem 'dotenv-rails'
 # gem 'capistrano-rails', group: :development
 
+# Use Rubyzip gem
+gem 'rubyzip', '~> 1.2.2'
+
 # Add awesome_print for easier debugging
 gem 'awesome_print'
 
