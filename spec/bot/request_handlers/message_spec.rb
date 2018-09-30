@@ -9,84 +9,31 @@ RSpec.describe RequestHandlers::Message do
 
   describe '.handle' do
     it 'responds with a message' do
-      expect(Bot).to receive(:deliver)
+      stub_deliver
       message = fake_incoming_message('Hello, world')
-      RequestHandlers::Message.handle(message)
+      expect(Intents::Classifier).to receive(:classify)
+      expect(Intents::Mapper).to receive(:map_intent_to_message) { fake_outgoing_message('Hello, world') }
 
-      expect_bot_message_not_to_have_quick_replies(message)
+      RequestHandlers::Message.handle(message)
     end
 
-    it 'calls the RetrieveUserData service' do
+    it 'calls the IntentClassifier class with a free-form message' do
+      stub_deliver
       message = fake_incoming_message('Hello, world')
-      allow(Bot).to receive(:deliver)
-      expect(Users::RetrieveUserData).to receive(:call).with(message.sender['id']) { JSON.parse(facebook_user_data_response[:body]) }
+      expect(Intents::Classifier).to receive(:classify).with(message)
 
       RequestHandlers::Message.handle(message)
     end
 
-    it 'calls the IntentClassifier class' do
-      message = fake_incoming_message('Hello, world')
-      allow(Bot).to receive(:deliver)
-      expect(Intents::Classifier).to receive(:classify).with(message.text)
-
-      RequestHandlers::Message.handle(message)
-    end
-
-    it 'invites the user to add a new bottle of red wine' do
-      message = fake_incoming_message('I just had a bottle of red')
-      expected_response = 'How lovely! Would you like to add a new bottle of red to your cellar?'
-
-      allow(Intents::Classifier).to receive(:classify).with(message.text) { :add_red }
-      allow(Intents::Mapper).to receive(:map_intent_to_message) { fake_outgoing_message(expected_response) }
-
-      expect_bot_message_to_have_text(message, expected_response)
-      expect_bot_message_not_to_have_quick_replies(message)
-
-      RequestHandlers::Message.handle(message)
-    end
-
-    it 'invites the user to add a new bottle of white wine' do
-      message = fake_incoming_message('I just had a bottle of white')
-      expected_response = 'How lovely! Would you like to add a new bottle of white to your cellar?'
-
-      allow(Intents::Classifier).to receive(:classify).with(message.text) { :add_white }
-      allow(Intents::Mapper).to receive(:map_intent_to_message) { fake_outgoing_message(expected_response) }
-
-      expect_bot_message_to_have_text(message, expected_response)
-      expect_bot_message_not_to_have_quick_replies(message)
-
-      RequestHandlers::Message.handle(message)
-    end
-
-    it 'invites a user to sign up after they ask to with quick replies for yes' do
-      text = 'I\'d like to create an account please'
-      message = fake_incoming_message(text)
-
-      quick_reply = {
-        content_type: 'text',
-        title: 'Yes please!',
-        payload: 'CREATE_ACCOUNT'
-      }
-
-      expected_response = 'Would you like to create your account with Charles d\'Née?'
-
-      allow(Intents::Classifier).to receive(:classify).with(message.text) { :create_account }
-      allow(Intents::Mapper).to receive(:map_intent_to_message) { fake_outgoing_message(expected_response, [quick_reply]) }
-
-      expect_bot_message_to_have_text(message, expected_response)
-      expect_bot_message_to_have_quick_reply(message, quick_reply)
-      RequestHandlers::Message.handle(message)
-    end
-
-    it 'calls the Users::FindOrCreateUser service' do
-      allow(Bot).to receive(:deliver) {}
+    it 'calls the IntentClassifier class with a quick-reply message' do
+      stub_deliver
       text = 'any old message text'
-      quick_reply_payload = 'CREATE_ACCOUNT'
-      user_message = fake_incoming_message(text, quick_reply_payload)
+      quick_reply_payload = 'any_quick_reply_payload'
+      message = fake_incoming_message(text, quick_reply_payload)
 
-      expect(Users::FindOrCreateUser).to receive(:call)
+      expect(Intents::Classifier).to receive(:classify).with(message)
 
-      Bot.trigger(:message, user_message)
+      Bot.trigger(:message, message)
     end
   end
 
@@ -180,5 +127,9 @@ RSpec.describe RequestHandlers::Message do
       }.to_json,
       headers: {}
     }
+  end
+
+  def stub_deliver
+    expect(Bot).to receive(:deliver)
   end
 end
