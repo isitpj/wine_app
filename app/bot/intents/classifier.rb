@@ -1,7 +1,8 @@
 module Intents
   class Classifier
-    def self.classify(text)
-      map_text_to_intent(text)
+    def self.classify(message)
+      return quick_reply(message)['payload'].to_sym if quick_reply(message)
+      map_text_to_intent(message.text)
     end
 
     private
@@ -15,6 +16,10 @@ module Intents
         elsif /white/i.match?(text)
           :add_white
         end
+      end
+
+      private def quick_reply(message)
+        message.messaging['message']['quick_reply']
       end
     end
   end
