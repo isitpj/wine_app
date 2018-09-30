@@ -53,7 +53,7 @@ RSpec.describe RequestHandlers::Message do
       allow(Intents::Mapper).to receive(:map_intent_to_message) { fake_outgoing_message(expected_response) }
 
       expect_bot_message_to_have_text(message, expected_response)
-      # expect_bot_message_not_to_have_quick_replies(message)
+      expect_bot_message_not_to_have_quick_replies(message)
 
       RequestHandlers::Message.handle(message)
     end
