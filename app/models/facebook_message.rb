@@ -16,4 +16,6 @@ class FacebookMessage < ApplicationRecord
   validates :name, presence: true
   validates :category, presence: true
   validates :body, presence: true
+
+  enum category: [:fallback]
 end
