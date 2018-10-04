@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :facebook_message do
     name { 'Default Message' }
-    category { 'Default Category' }
+    category { :fallback }
   end
 end
