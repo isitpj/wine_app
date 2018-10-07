@@ -27,6 +27,3 @@
 
 # Ignore ngrok
 ngrok
-
-# Ignore ENV variables
-.env
