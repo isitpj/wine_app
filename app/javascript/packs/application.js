@@ -10,13 +10,14 @@
 console.log('Hello World from Webpacker')
 import Vue from 'vue'
 import App from '../components/app.vue'
+// console.log(message)
 
 document.addEventListener('DOMContentLoaded', () => {
   document.body.appendChild(document.createElement('app'))
+
   const app = new Vue({
     el: 'app',
-    template:'<App/>',
-    components: { App }
+    render: h => h(App)
   })
 
   console.log(app);
