@@ -46,7 +46,7 @@ RSpec.describe RequestHandlers::Message do
     expect(Bot).to receive(:deliver)
       .with(
         hash_including(message: hash_including(text: text)),
-        access_token: ENV['ACCESS_TOKEN']
+        access_token: ENV['FB_ACCESS_TOKEN']
       )
   end
 

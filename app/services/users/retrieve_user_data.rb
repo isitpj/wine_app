@@ -27,7 +27,7 @@ module Users
     end
 
     def access_token
-      "&access_token=#{ENV["ACCESS_TOKEN"]}"
+      "&access_token=#{ENV["FB_ACCESS_TOKEN"]}"
     end
   end
 end
