@@ -43,6 +43,10 @@ gem 'rubyzip', '~> 1.2.2'
 # Add awesome_print for easier debugging
 gem 'awesome_print'
 
+# Add gems to enable frontend stuff with Vue
+gem 'webpacker'
+gem 'foreman'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
