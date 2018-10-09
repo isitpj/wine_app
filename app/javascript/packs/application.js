@@ -17,6 +17,4 @@ document.addEventListener('DOMContentLoaded', () => {
     el: '#app',
     render: h => h(App, { props })
   })
-
-  console.log(app);
 })
