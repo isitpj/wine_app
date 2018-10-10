@@ -1,5 +1,6 @@
 class PagesController < ApplicationController
   def welcome
-    @message = 'Vincent Wine'
+    @messages = FacebookMessage.all
+    render json: @messages
   end
 end
