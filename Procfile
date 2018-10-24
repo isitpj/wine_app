@@ -1,2 +1,2 @@
+frontend: npm run dev --prefix client  
 backend: bin/rails s -p 3000
-frontend: bin/webpack-dev-server --port 8080
