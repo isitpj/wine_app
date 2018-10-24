@@ -20,7 +20,7 @@ RSpec.describe Users::RetrieveUserData do
   private
 
   def facebook_user_data_request_url
-    "https://graph.facebook.com/#{fake_user_facebook_id}?fields=first_name,last_name,profile_pic&access_token=#{ENV['FB_ACCESS_TOKEN']}"
+    "https://graph.facebook.com/#{fake_user_facebook_id}?fields=first_name,last_name,profile_pic&access_token=#{ENV['ACCESS_TOKEN']}"
   end
 
   def fake_user_facebook_id

@@ -5,7 +5,7 @@ require 'uri'
 include Facebook::Messenger
 
 class Listener
-  Facebook::Messenger::Subscriptions.subscribe(access_token: ENV["FB_ACCESS_TOKEN"])
+  Facebook::Messenger::Subscriptions.subscribe(access_token: ENV["ACCESS_TOKEN"])
   Bot.on :message do |message|
     RequestHandlers::Message.handle(message)
   end
