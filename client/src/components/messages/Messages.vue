@@ -1,16 +1,18 @@
 <template>
   <div id="messages">
     <div v-for="(message) in messages" :key="message.id">
-      <p>{{message.name}}</p>
-      <p>Text: {{message.body}}</p>
-      <p>Category: {{message.category}}</p>
+      <message :message="message"></message>
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import message from './Message.vue'
 export default {
+  components: {
+    message
+  },
   data() {
     return {
       messages: [],
@@ -26,7 +28,7 @@ export default {
         this.errors.push(e)
       }
     )
-  }
+  },
 }
 </script>
 
