@@ -43,6 +43,15 @@ gem 'rubyzip', '~> 1.2.2'
 # Add awesome_print for easier debugging
 gem 'awesome_print'
 
+# Add gems to enable frontend stuff with Vue
+gem 'webpacker'
+gem 'foreman'
+
+# Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
+gem 'rack-cors'
+
+gem 'nokogiri', '~> 1.8.5'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

@@ -27,6 +27,8 @@
 
 # Ignore ngrok
 ngrok
-
-# Ignore ENV variables
-.env
+/public/packs
+/public/packs-test
+/node_modules
+yarn-debug.log*
+.yarn-integrity
