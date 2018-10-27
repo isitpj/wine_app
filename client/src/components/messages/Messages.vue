@@ -3,15 +3,19 @@
     <div v-for="(message) in messages" :key="message.id">
       <message :message="message"></message>
     </div>
+    <modal></modal>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
 import message from './Message.vue'
+import modal from './../Modal.vue'
+
 export default {
   components: {
-    message
+    message,
+    modal
   },
   data() {
     return {
