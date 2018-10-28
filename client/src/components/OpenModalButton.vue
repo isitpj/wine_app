@@ -1,5 +1,10 @@
 <template>
-  <button type="button" name="button"></button>
+  <button
+    type="button"
+    class="btn"
+  >
+    {{copy}}
+  </button>
 </template>
 
 <script>
