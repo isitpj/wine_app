@@ -1,9 +1,19 @@
 <template>
   <div id="messages">
+    <button
+      type="button"
+      class="btn"
+      @click="showModal"
+    >
+      Open modal!
+    </button>
     <div v-for="(message) in messages" :key="message.id">
       <message :message="message"></message>
     </div>
-    <modal></modal>
+    <modal
+      v-show="isModalVisible"
+      @close="closeModal"
+    />
   </div>
 </template>
 
@@ -17,10 +27,19 @@ export default {
     message,
     modal
   },
+  methods: {
+    showModal() {
+      this.isModalVisible = true;
+    },
+    closeModal() {
+      this.isModalVisible = false;
+    }
+  },
   data() {
     return {
       messages: [],
       errors: [],
+      isModalVisible: false,
     }
   },
   created() {
