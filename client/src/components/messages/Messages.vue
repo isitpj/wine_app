@@ -1,19 +1,16 @@
 <template>
   <div id="messages">
-    <button
-      type="button"
-      class="btn"
-      @click="showModal"
-    >
-      Open modal!
-    </button>
+    <buttonComponent v-on:action="showModal" copy="Button Component"/>
+
     <div v-for="(message) in messages" :key="message.id">
       <message :message="message"></message>
     </div>
     <modal
       v-show="isModalVisible"
       @close="closeModal"
-    />
+    >
+      <newMessageForm slot="body"/>
+    </modal>
   </div>
 </template>
 
@@ -21,14 +18,18 @@
 import axios from 'axios'
 import message from './Message.vue'
 import modal from './../Modal.vue'
+import newMessageForm from './NewMessageForm.vue'
+import buttonComponent from './../Button.vue'
 
 export default {
   components: {
     message,
-    modal
+    modal,
+    newMessageForm,
+    buttonComponent
   },
   methods: {
-    showModal() {
+    showModal: function() {
       this.isModalVisible = true;
     },
     closeModal() {
