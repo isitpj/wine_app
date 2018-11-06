@@ -18,4 +18,16 @@ RSpec.describe Api::MessagesController, type: :controller do
       expect(parsed_response.length).to eq 1
     end
   end
+
+  describe 'POST - create' do
+    it 'creates a new message object' do
+      expect { post :create, params: message_params}.to change { FacebookMessage.count }.from(0).to(1)
+    end
+  end
+
+  private
+
+  def message_params
+     { message: { name: 'a name', category: 'fallback', body: 'hello, world'} }
+  end
 end
