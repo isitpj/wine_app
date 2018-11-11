@@ -5,7 +5,8 @@ class Api::MessagesController < ApplicationController
   end
 
   def create
-    FacebookMessage.create(message_params)
+    @message = FacebookMessage.create(message_params)
+    render json: @message
   end
 
   private
