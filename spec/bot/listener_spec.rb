@@ -6,7 +6,7 @@ RSpec.describe Listener do
   describe 'Bot#on(message)' do
     it 'passes the message to RequestHandlers::Message.handle' do
       message = fake_message('Hello, world')
-      expect(RequestHandlers::Message).to receive(:handle).with(message)
+      expect(Message).to receive(:handle).with(message)
 
       Bot.trigger(:message, message)
     end

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
-import Messages from '@/components/Messages'
+import Messages from '@/components/messages/Messages'
 
 Vue.use(Router)
 
