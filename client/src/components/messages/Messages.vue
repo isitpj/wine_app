@@ -34,6 +34,17 @@ export default {
     },
     closeModal() {
       this.isModalVisible = false;
+      // TODO: this is asynchronous and so the message does not exist at the point that this call is made. Work out how to properly add the message once the modal is closed
+      this.getMessages();
+    },
+    getMessages: function() {
+      axios.get(this.indexEndpoint)
+        .then(response => {
+          this.messages = response.data
+        })
+        .catch(e => {
+          this.errors.push(e)
+        })
     }
   },
   data() {
@@ -41,17 +52,11 @@ export default {
       messages: [],
       errors: [],
       isModalVisible: false,
+      indexEndpoint: 'http://localhost:3000/api/messages',
     }
   },
   created() {
-    axios.get('http://localhost:3000/api/messages')
-      .then(response => {
-        this.messages = response.data
-      })
-      .catch(e => {
-        this.errors.push(e)
-      }
-    )
+    this.getMessages();
   },
 }
 </script>
