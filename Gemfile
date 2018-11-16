@@ -47,8 +47,12 @@ gem 'awesome_print'
 gem 'webpacker'
 gem 'foreman'
 
+# Specify secure version of loofah dependency
+gem 'loofah', '>= 2.2.3'
+
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
+gem 'rack', '>= 2.0.6'
 
 gem 'nokogiri', '~> 1.8.5'
 
