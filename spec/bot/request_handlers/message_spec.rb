@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe RequestHandlers::Message do
+RSpec.describe Message do
   describe '.handle' do
     it 'responds with a message' do
       expect_bot_message_to_have_text('It\'s Han, but that\'s okay')
@@ -8,7 +8,7 @@ RSpec.describe RequestHandlers::Message do
       expect(Intents::Classifier).to receive(:classify)
       expect(Intents::Mapper).to receive(:map_intent_to_message) { fake_outgoing_message('It\'s Han, but that\'s okay') }
 
-      RequestHandlers::Message.handle(message)
+      Message.handle(message)
     end
 
     it 'calls the IntentClassifier class with a free-form message' do
@@ -16,7 +16,7 @@ RSpec.describe RequestHandlers::Message do
       message = fake_incoming_message('Hello, world')
       expect(Intents::Classifier).to receive(:classify).with(message)
 
-      RequestHandlers::Message.handle(message)
+      Message.handle(message)
     end
 
     it 'calls the IntentClassifier class with a quick-reply message' do
