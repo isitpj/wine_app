@@ -16,42 +16,41 @@
             This is the default title!
 
             <button
-            type="button"
-            class="btn-close"
-            @click="close"
-            aria-label="Close modal"
+              type="button"
+              class="btn-close"
+              @click="close"
+              aria-label="Close modal"
             >
-            x
-          </button>
-        </slot>
-      </header>
+              x
+            </button>
+          </slot>
+        </header>
 
-      <section
-        class="modal-body"
-        id="modalDescription"
-      >
-        <slot name="body">
-          I'm the default body!
-        </slot>
-      </section>
+        <section
+          class="modal-body"
+          id="modalDescription"
+        >
+          <slot name="body">
+            I'm the default body!
+          </slot>
+        </section>
 
-      <footer class="modal-footer">
-        <slot name="footer">
-          I'm the default footer!
+        <footer class="modal-footer">
+          <slot name="footer">
+            I'm the default footer!
 
-          <button
-          type="button"
-          class="btn-green"
-          @click="close"
-          aria-label="Close modal"
-          >
-          Close me!
-        </button>
-      </slot>
-    </footer>
-
-  </div>
-</div>
+            <button
+              type="button"
+              class="btn-green"
+              @click="close"
+              aria-label="Close modal"
+            >
+              Close me!
+            </button>
+          </slot>
+        </footer>
+      </div>
+    </div>
   </transition>
 </template>
 
