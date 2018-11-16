@@ -1,17 +1,40 @@
 <template lang="html">
-  <form class="" action="https://localhost:3000/api/message" method="post">
-    <input type="text" name="message-name" placeholder="Enter a name for the message">
-    <select name="category">
-      <option value="fallback">Fallback</option>
+  <form>
+
+    <input
+      type="text"
+      name="message-name"
+      v-model="messageName"
+      placeholder="Enter a name for the message"
+    >
+
+    <select
+      name="category"
+      v-model="messageCategory"
+    >
+      <option
+        value="fallback"
+      >
+        Fallback
+      </option>
+
     </select>
-    <textarea name="message-text" rows="4" cols="80" placeholder="Enter the text for the message here..."></textarea>
-    <!-- <input type="submit" value="Create message"> -->
+
+    <textarea
+      name="message-text"
+      v-model="messageText"
+      rows="4"
+      cols="80"
+      placeholder="Enter the text for the message here...">
+    </textarea>
+
     <button
       type="submit"
-      v-on:click.prevent="createMessage"
+      v-on:click.prevent="createMessageAndClose"
     >
       Create
     </button>
+
   </form>
 </template>
 
@@ -19,13 +42,24 @@
 import axios from 'axios'
 export default {
   name: 'newMessageForm',
+  data() {
+    return {
+      messageName: '',
+      messageCategory: '',
+      messageText: '',
+      createEndpoint: 'http://localhost:3000/api/messages',
+    }
+  },
   methods: {
+    close: function() {
+      this.$emit('close');
+    },
     createMessage: function() {
-      axios.post('http://localhost:3000/api/messages', {
+      axios.post(this.createEndpoint, {
         message: {
-          name: 'Test message',
-          category: 'fallback',
-          body: 'Hello, world'
+          name: this.messageName,
+          category: this.messageCategory,
+          body: this.messageText,
         }
       })
       .then(response => {
@@ -34,6 +68,10 @@ export default {
       .catch(error => {
         console.log(error);
       });
+    },
+    createMessageAndClose: function() {
+      this.createMessage();
+      this.$parent.close();
     }
   },
 }
