@@ -1,6 +1,9 @@
 <template>
   <div id="messages">
-    <buttonComponent v-on:action="showModal" copy="Button Component"/>
+    <FloatingActionButton
+      v-on:action="showModal"
+      materialIconTag="add"
+    />
 
     <div v-for="(message) in messages" :key="message.id">
       <message :message="message"></message>
@@ -22,14 +25,14 @@ import axios from 'axios'
 import message from './Message.vue'
 import modal from './../Modal.vue'
 import newMessageForm from './NewMessageForm.vue'
-import buttonComponent from './../Button.vue'
+import FloatingActionButton from './../FloatingActionButton.vue'
 
 export default {
   components: {
     message,
     modal,
     newMessageForm,
-    buttonComponent
+    FloatingActionButton
   },
   methods: {
     showModal: function() {
