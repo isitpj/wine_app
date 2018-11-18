@@ -9,7 +9,10 @@
       v-show="isModalVisible"
       @close="closeModal"
     >
-      <newMessageForm slot="body"/>
+      <newMessageForm
+        slot="body"
+        @getMessages="getMessages"
+      />
     </modal>
   </div>
 </template>
@@ -34,8 +37,6 @@ export default {
     },
     closeModal() {
       this.isModalVisible = false;
-      // TODO: this is asynchronous and so the message does not exist at the point that this call is made. Work out how to properly add the message once the modal is closed
-      this.getMessages();
     },
     getMessages: function() {
       axios.get(this.indexEndpoint)
