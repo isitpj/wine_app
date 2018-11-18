@@ -51,9 +51,6 @@ export default {
     }
   },
   methods: {
-    close: function() {
-      this.$emit('close');
-    },
     createMessage: function() {
       axios.post(this.createEndpoint, {
         message: {
@@ -63,11 +60,9 @@ export default {
         }
       })
       .then(response => {
-        console.log(response);
+        this.$emit('getMessages');
       })
-      .catch(error => {
-        console.log(error);
-      });
+      .catch(error => {});
     },
     createMessageAndClose: function() {
       this.createMessage();
