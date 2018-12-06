@@ -1,14 +1,23 @@
 <template lang="html">
-  <button
-    type="button"
-    class="floating-action-button"
+  <md-button
+    class="md-fab md-primary"
+    id="floating-action-button"
     @click="action"
   >
-    <span class="material-icons">{{materialIconTag}}</span>
-  </button>
+    <md-icon class="material-icons">
+      {{materialIconTag}}
+    </md-icon>
+  </md-button>
 </template>
 
 <script>
+import Vue from 'vue'
+import { MdButton, MdIcon } from 'vue-material/dist/components'
+import 'vue-material/dist/vue-material.min.css'
+
+Vue.use(MdButton)
+Vue.use(MdIcon)
+
 export default {
   name: 'FloatingActionButton',
   props: ['materialIconTag'],
@@ -21,16 +30,11 @@ export default {
 </script>
 
 <style lang="css">
-.floating-action-button {
-  height: 6em;
-  width: 6em;
-  border-radius: 5em;
+#floating-action-button {
   position: fixed;
   right: 2em;
   bottom: 2em;
-  border-style: none;
   background-color: #ff0083;
-  box-shadow: 3px 3px grey;
 }
 
 .material-icons {
