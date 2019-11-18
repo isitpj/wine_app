@@ -38,7 +38,7 @@ gem 'jbuilder', '~> 2.5'
 # gem 'capistrano-rails', group: :development
 
 # Use Rubyzip gem
-gem 'rubyzip', '~> 1.2.2'
+gem 'rubyzip', '~> 1.3.0'
 
 # Add awesome_print for easier debugging
 gem 'awesome_print'
